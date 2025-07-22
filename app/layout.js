@@ -1,6 +1,5 @@
 import { Inter } from "next/font/google"
 import "./globals.css"
-import StructuredData from "./components/StructuredData"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -57,13 +56,68 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: "World Skill Challenge 2024",
+    description: "A National & International Skill Hunt for Young Innovators",
+    startDate: "2024-03-01",
+    endDate: "2024-12-31",
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/MixedEventAttendanceMode",
+    location: [
+      {
+        "@type": "Place",
+        name: "Mumbai Regional Center",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Mumbai",
+          addressCountry: "IN",
+        },
+      },
+      {
+        "@type": "Place",
+        name: "Delhi National Finale",
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Delhi",
+          addressCountry: "IN",
+        },
+      },
+    ],
+    organizer: {
+      "@type": "Organization",
+      name: "AeroBay",
+      url: "https://aerobay.com",
+    },
+    offers: [
+      {
+        "@type": "Offer",
+        name: "Free Team Registration",
+        price: "0",
+        priceCurrency: "INR",
+        description: "1 Free Team per school in any ONE category",
+      },
+      {
+        "@type": "Offer",
+        name: "Standard Categories",
+        price: "499",
+        priceCurrency: "INR",
+        description: "Per additional team",
+      },
+    ],
+    audience: {
+      "@type": "EducationalAudience",
+      educationalRole: "student",
+    },
+  }
+
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <StructuredData />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
   )
 }
-

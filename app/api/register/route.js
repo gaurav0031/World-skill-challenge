@@ -1,15 +1,19 @@
-import { NextResponse } from "next/server"
-import { MongoClient } from "mongodb"
+import { NextResponse } from "next/server";
+import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI || "mongodb://localhost:27017"
+// MongoDB URI must be provided from Vercel env
+const uri = process.env.MONGODB_URI;
+
+if (!uri) {
+  throw new Error("MONGODB_URI is not defined in environment variables");
+}
 
 export async function POST(request) {
-  let client
+  let client;
 
   try {
-    const body = await request.json()
+    const body = await request.json();
 
-    // Validate required fields
     const requiredFields = [
       "schoolName",
       "contactPerson",
@@ -19,85 +23,87 @@ export async function POST(request) {
       "teamName",
       "studentNames",
       "mentorName",
-    ]
+    ];
 
     for (const field of requiredFields) {
       if (!body[field]) {
-        return NextResponse.json({ error: `${field} is required` }, { status: 400 })
+        return NextResponse.json(
+          { error: `${field} is required` },
+          { status: 400 }
+        );
       }
     }
 
-    // Validate student names array
     if (
       !Array.isArray(body.studentNames) ||
       body.studentNames.length !== 3 ||
       body.studentNames.some((name) => !name.trim())
     ) {
-      return NextResponse.json({ error: "Three student names are required" }, { status: 400 })
+      return NextResponse.json(
+        { error: "Three student names are required" },
+        { status: 400 }
+      );
     }
 
-    // Connect to MongoDB
-    client = new MongoClient(uri)
-    await client.connect()
-    const db = client.db("worldskillchallenge")
-    const collection = db.collection("registrations")
+    client = new MongoClient(uri);
+    await client.connect();
 
-    // Check if team name already exists for the same school
+    const db = client.db("worldskillchallenge");
+    const collection = db.collection("registrations");
+
     const existingTeam = await collection.findOne({
       schoolName: body.schoolName,
       teamName: body.teamName,
-    })
+    });
 
     if (existingTeam) {
-      return NextResponse.json({ error: "Team name already exists for this school" }, { status: 409 })
+      return NextResponse.json(
+        { error: "Team name already exists for this school" },
+        { status: 409 }
+      );
     }
 
-    // Create registration document
     const registration = {
       ...body,
       registrationDate: new Date(),
       status: "pending",
       paymentStatus: "pending",
-    }
+    };
 
-    // Insert registration
-    const result = await collection.insertOne(registration)
+    const result = await collection.insertOne(registration);
 
     return NextResponse.json(
       {
         message: "Registration successful",
         registrationId: result.insertedId,
       },
-      { status: 201 },
-    )
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Registration error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("Registration error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   } finally {
-    if (client) {
-      await client.close()
-    }
+    if (client) await client.close();
   }
 }
 
 export async function GET() {
-  let client
+  let client;
 
   try {
-    client = new MongoClient(uri)
-    await client.connect()
-    const db = client.db("worldskillchallenge")
-    const collection = db.collection("registrations")
+    client = new MongoClient(uri);
+    await client.connect();
 
-    const registrations = await collection.find({}).toArray()
+    const db = client.db("worldskillchallenge");
+    const collection = db.collection("registrations");
 
-    return NextResponse.json({ registrations }, { status: 200 })
+    const registrations = await collection.find({}).toArray();
+
+    return NextResponse.json({ registrations }, { status: 200 });
   } catch (error) {
-    console.error("Fetch registrations error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("Fetch registrations error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   } finally {
-    if (client) {
-      await client.close()
-    }
+    if (client) await client.close();
   }
 }

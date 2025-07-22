@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://world-skill-challenge.vercel.app/sitemap.xml
+
+# Block access to API routes from search engines
+User-agent: *
+Disallow: /api/
+
+# Allow all other pages
+User-agent: *
+Allow: /

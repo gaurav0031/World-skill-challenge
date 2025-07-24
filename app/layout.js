@@ -1,8 +1,9 @@
-import { Inter } from "next/font/google"
-import "./globals.css"
+import { Inter } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
+// ✅ Metadata used by Next.js (automatically injected into <head>)
 export const metadata = {
   title: "World Skill Challenge 2024 - Powered by AeroBay | National & International Competition",
   description:
@@ -33,7 +34,7 @@ export const metadata = {
     siteName: "World Skill Challenge",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "https://world-skill-challenge.vercel.app/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "World Skill Challenge 2024 - Powered by AeroBay",
@@ -43,8 +44,9 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "World Skill Challenge 2024 - National & International Competition",
-    description: "Join the World Skill Challenge 2024! A National & International Skill Hunt for Young Innovators.",
-    images: ["/og-image.jpg"],
+    description:
+      "Join the World Skill Challenge 2024! A National & International Skill Hunt for Young Innovators.",
+    images: ["https://world-skill-challenge.vercel.app/og-image.jpg"],
     creator: "@aerobay",
   },
   alternates: {
@@ -53,71 +55,76 @@ export const metadata = {
   verification: {
     google: "RGvrLhpTgytQ7TOvecdB9H4scuJY1ZZwM-09HnY4AB0",
   },
-}
+};
+
+// ✅ Structured Data (JSON-LD)
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "World Skill Challenge 2024",
+  description: "A National & International Skill Hunt for Young Innovators",
+  startDate: "2024-03-01",
+  endDate: "2024-12-31",
+  eventStatus: "https://schema.org/EventScheduled",
+  eventAttendanceMode: "https://schema.org/MixedEventAttendanceMode",
+  location: [
+    {
+      "@type": "Place",
+      name: "Mumbai Regional Center",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Mumbai",
+        addressCountry: "IN",
+      },
+    },
+    {
+      "@type": "Place",
+      name: "Delhi National Finale",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Delhi",
+        addressCountry: "IN",
+      },
+    },
+  ],
+  organizer: {
+    "@type": "Organization",
+    name: "AeroBay",
+    url: "https://aerobay.com",
+  },
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Free Team Registration",
+      price: "0",
+      priceCurrency: "INR",
+      description: "1 Free Team per school in any ONE category",
+    },
+    {
+      "@type": "Offer",
+      name: "Standard Categories",
+      price: "499",
+      priceCurrency: "INR",
+      description: "Per additional team",
+    },
+  ],
+  audience: {
+    "@type": "EducationalAudience",
+    educationalRole: "student",
+  },
+};
 
 export default function RootLayout({ children }) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    name: "World Skill Challenge 2024",
-    description: "A National & International Skill Hunt for Young Innovators",
-    startDate: "2024-03-01",
-    endDate: "2024-12-31",
-    eventStatus: "https://schema.org/EventScheduled",
-    eventAttendanceMode: "https://schema.org/MixedEventAttendanceMode",
-    location: [
-      {
-        "@type": "Place",
-        name: "Mumbai Regional Center",
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: "Mumbai",
-          addressCountry: "IN",
-        },
-      },
-      {
-        "@type": "Place",
-        name: "Delhi National Finale",
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: "Delhi",
-          addressCountry: "IN",
-        },
-      },
-    ],
-    organizer: {
-      "@type": "Organization",
-      name: "AeroBay",
-      url: "https://aerobay.com",
-    },
-    offers: [
-      {
-        "@type": "Offer",
-        name: "Free Team Registration",
-        price: "0",
-        priceCurrency: "INR",
-        description: "1 Free Team per school in any ONE category",
-      },
-      {
-        "@type": "Offer",
-        name: "Standard Categories",
-        price: "499",
-        priceCurrency: "INR",
-        description: "Per additional team",
-      },
-    ],
-    audience: {
-      "@type": "EducationalAudience",
-      educationalRole: "student",
-    },
-  }
-
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+        {/* ✅ Inject JSON-LD structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
-  )
+  );
 }
